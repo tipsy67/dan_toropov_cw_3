@@ -1,3 +1,8 @@
+import json
+
+from src.settings import PATH_TO_OPERATIONS
+
+
 class Transactions:
     def __init__(self, dict_: dict):
         """
@@ -29,4 +34,11 @@ class Transactions:
         return True
 
     def __repr__(self):
-        return f"{self.id},"
+        return f"{self.id}, {self.date:%d.%m.%Y}"
+
+def load_json() -> [Transactions]:
+    with open(PATH_TO_OPERATIONS) as file:
+        list_ = json.dump(file)
+    return [Transactions(x) for x in list_]
+
+d = load_json()
