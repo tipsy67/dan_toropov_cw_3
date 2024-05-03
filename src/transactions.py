@@ -21,24 +21,27 @@ class Transactions:
         "from": "Счет 75106830613657916952",
         "to": "Счет 11776614605963066702"
         """
-        self.id = dict_["id"]
-        self.state = dict_["state"] == "EXECUTED"
-        self.date = dict_["date"]
-        self.operationAmount = dict_["operationAmount"]
-        self.description = dict_["description"]
-        self.from_ = dict_["from"]
-        self.to = dict_["to"]
+        self.id = dict_["id"] if "id" in dict_ else ""
+        self.state = dict_["state"] == "EXECUTED" if "state" in dict_ else False
+        self.date = dict_["date"] if "date" in dict_ else ""
+        self.operationAmount = dict_["operationAmount"] if "operationAmount" in dict_ else ""
+        self.description = dict_["description"] if "description" in dict_ else ""
+        self.from_ = dict_["from"] if "from" in dict_ else ""
+        self.to = dict_["to"] if "to" in dict_ else ""
         self.valid = self.validate()
 
     def validate(self) -> bool:
         return True
 
     def __repr__(self):
-        return f"{self.id}, {self.date:%d.%m.%Y}"
+        return f"{self.id} {self.date}"
+
 
 def load_json() -> [Transactions]:
     with open(PATH_TO_OPERATIONS) as file:
-        list_ = json.dump(file)
-    return [Transactions(x) for x in list_]
+        list_ = json.load(file)
+    return [Transactions(x) for x in list_ if x != {}]
+
 
 d = load_json()
+print(d)
