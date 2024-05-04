@@ -1,9 +1,12 @@
-import json
+from datetime import datetime
 
-from src.settings import PATH_TO_OPERATIONS
+from src.settings import ERROR_LOG
 
 
 class Transactions:
+    is_trans_valid = True
+    err_str = ""
+
     def __init__(self, dict_: dict):
         """
         :param dict_:
@@ -21,27 +24,31 @@ class Transactions:
         "from": "Счет 75106830613657916952",
         "to": "Счет 11776614605963066702"
         """
-        self.id = dict_["id"] if "id" in dict_ else ""
-        self.state = dict_["state"] == "EXECUTED" if "state" in dict_ else False
-        self.date = dict_["date"] if "date" in dict_ else ""
-        self.operationAmount = dict_["operationAmount"] if "operationAmount" in dict_ else ""
-        self.description = dict_["description"] if "description" in dict_ else ""
-        self.from_ = dict_["from"] if "from" in dict_ else ""
-        self.to = dict_["to"] if "to" in dict_ else ""
-        self.valid = self.validate()
+        self.id = dict_["id"] if "id" in dict_ else self.missing_key("id")
+        self.state = dict_["state"] == "EXECUTED" if "state" in dict_ else self.missing_key("state")
+        self.date = datetime.strptime(dict_["date"], '%Y-%m-%dT%H:%M:%S.%f') \
+            if "date" in dict_ else self.missing_key("date")
+        self.operationAmount = dict_["operationAmount"] if "operationAmount" in dict_ else self.missing_key("opAm")
+        self.description = dict_["description"] if "description" in dict_ else self.missing_key("descr")
+        self.from_maybe_empty: str = dict_["from"] if "from" in dict_ else None
+        self.to = dict_["to"] if "to" in dict_ else self.missing_key("to")
+        if self.from_maybe_empty is not None:
+            self.validate(self.from_maybe_empty.split()[-1])
+        self.validate(self.to.split()[-1])
 
-    def validate(self) -> bool:
-        return True
+    def missing_key(self, key: str) -> None:
+        if ERROR_LOG:
+            self.err_str = self.err_str + "mis_" + key + ";"
+        self.is_trans_valid = False
+
+    def validate(self, account: str) -> None:
+        if not (account.isdigit() and (len(account) == 16 or len(account) == 20)):
+            self.is_trans_valid = False
+            if ERROR_LOG:
+                self.err_str = self.err_str + "ERR_ACC:"
 
     def __repr__(self):
-        return f"{self.id} {self.date}"
+        return f"{self.id} {self.date}" if self.is_trans_valid else self.err_str
 
 
-def load_json() -> [Transactions]:
-    with open(PATH_TO_OPERATIONS) as file:
-        list_ = json.load(file)
-    return [Transactions(x) for x in list_ if x != {}]
 
-
-d = load_json()
-print(d)
