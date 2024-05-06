@@ -19,7 +19,7 @@ def return_last_trans(list_: [Transactions]) -> [Transactions]:
     return local_copy
 
 
-def format_acc_str(str_):
+def format_acc_str(str_) -> str:
     list_ = str_.split()
     str_ = list_[-1]
     if len(str_) == 16:
@@ -41,7 +41,7 @@ def format_trans(transaction: Transactions) -> str:
     return format_str
 
 
-def print_trans():
+def print_trans() -> None:
     list_transactions = load_json()
     list_transactions = return_last_trans(list_transactions)
     for x in list_transactions:
