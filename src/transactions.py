@@ -4,8 +4,9 @@ from src.settings import ERROR_LOG
 
 
 class Transactions:
-    is_trans_valid = True
-    err_str = ""
+
+    is_trans_valid = True # флаг для отслеживания валидности транзакций
+    err_str = "" # строка для хранения ошибок валидности при установленном ERROR_LOG
 
     def __init__(self, dict_: dict):
         """
