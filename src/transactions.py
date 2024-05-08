@@ -4,9 +4,8 @@ from src.settings import ERROR_LOG
 
 
 class Transactions:
-
-    is_trans_valid = True # флаг для отслеживания валидности транзакций
-    err_str = "" # строка для хранения ошибок валидности при установленном ERROR_LOG
+    is_trans_valid = True  # флаг для отслеживания валидности транзакций
+    err_str = ""  # строка для хранения ошибок валидности при установленном ERROR_LOG
 
     def __init__(self, dict_: dict):
         """
@@ -50,7 +49,7 @@ class Transactions:
 
     def validate(self, account: str) -> None:
         """
-        дополнительная проверка правильности длины номера счета\карты
+        дополнительная проверка валидности длины номера счета/карты
         :param account: строка с номером счета
         :return:
         """
@@ -61,6 +60,3 @@ class Transactions:
 
     def __repr__(self):
         return f"{self.id} {self.date}" if self.is_trans_valid else self.err_str
-
-
-

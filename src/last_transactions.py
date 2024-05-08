@@ -7,7 +7,7 @@ from src.transactions import Transactions
 
 def load_json() -> [Transactions]:
     """
-    загрузим непустые тразакции
+    загрузим непустые транзакции
     :return:
     """
     with open(PATH_TO_OPERATIONS) as file:
@@ -17,7 +17,7 @@ def load_json() -> [Transactions]:
 
 def return_last_trans(list_: [Transactions]) -> [Transactions]:
     """
-    вернем последние тразакции в количестве QUANTITY_TRANSACTIONS
+    вернем последние транзакции в количестве QUANTITY_TRANSACTIONS
     :param list_:
     :return:
     """
@@ -30,7 +30,7 @@ def return_last_trans(list_: [Transactions]) -> [Transactions]:
 
 def format_acc_str(str_) -> str:
     """
-    применим маску вывода на номер счета\карты
+    применим маску вывода на номер счета/карты
     :param str_:
     :return:
     """
@@ -45,7 +45,7 @@ def format_acc_str(str_) -> str:
 
 def format_trans(transaction: Transactions) -> str:
     """
-    преобразуем тразакцию в строку вывода
+    преобразуем транзакцию в строку вывода
     :param transaction:
     :return:
     """
@@ -70,6 +70,3 @@ def print_trans() -> None:
     list_transactions = return_last_trans(list_transactions)
     for x in list_transactions:
         print(format_trans(x))
-
-
-print_trans()
