@@ -57,6 +57,7 @@ class Transactions:
             self.is_trans_valid = False
             if ERROR_LOG:
                 self.err_str = self.err_str + "ERR_ACC:"
+        return None
 
     def __repr__(self):
         return f"{self.id} {self.date}" if self.is_trans_valid else self.err_str
