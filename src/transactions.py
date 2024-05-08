@@ -38,11 +38,22 @@ class Transactions:
         self.validate(self.to.split()[-1])
 
     def missing_key(self, key: str) -> None:
+        """
+        для записи отсутвующего ключа в строку ошибок
+        и сбрасывания флага валидности
+        :param key: отсутствующий ключ в словаре тразакции
+        :return:
+        """
         if ERROR_LOG:
             self.err_str = self.err_str + "mis_" + key + ";"
         self.is_trans_valid = False
 
     def validate(self, account: str) -> None:
+        """
+        дополнительная проверка правильности длины номера счета\карты
+        :param account: строка с номером счета
+        :return:
+        """
         if not (account.isdigit() and (len(account) == 16 or len(account) == 20)):
             self.is_trans_valid = False
             if ERROR_LOG:

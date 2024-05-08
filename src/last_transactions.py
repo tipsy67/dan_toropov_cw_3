@@ -6,12 +6,21 @@ from src.transactions import Transactions
 
 
 def load_json() -> [Transactions]:
+    """
+    загрузим непустые тразакции
+    :return:
+    """
     with open(PATH_TO_OPERATIONS) as file:
         list_ = json.load(file)
     return [Transactions(x) for x in list_ if x != {}]
 
 
 def return_last_trans(list_: [Transactions]) -> [Transactions]:
+    """
+    вернем последние тразакции в количестве QUANTITY_TRANSACTIONS
+    :param list_:
+    :return:
+    """
     local_copy = list_[:]
     local_copy = [x for x in local_copy if x.state and x.is_trans_valid]
     local_copy = sorted(local_copy, key=lambda x: x.date, reverse=True)
@@ -20,6 +29,11 @@ def return_last_trans(list_: [Transactions]) -> [Transactions]:
 
 
 def format_acc_str(str_) -> str:
+    """
+    применим маску вывода на номер счета\карты
+    :param str_:
+    :return:
+    """
     list_ = str_.split()
     str_ = list_[-1]
     if len(str_) == 16:
@@ -30,6 +44,11 @@ def format_acc_str(str_) -> str:
 
 
 def format_trans(transaction: Transactions) -> str:
+    """
+    преобразуем тразакцию в строку вывода
+    :param transaction:
+    :return:
+    """
     format_str = ""
     format_str += datetime.strftime(transaction.date, '%d.%m.%Y') + " "
     format_str += transaction.description + "\n"
@@ -42,6 +61,11 @@ def format_trans(transaction: Transactions) -> str:
 
 
 def print_trans() -> None:
+    """
+    печать последних завершенных и валидных транзакций
+    в количестве QUANTITY_TRANSACTIONS
+    :return:
+    """
     list_transactions = load_json()
     list_transactions = return_last_trans(list_transactions)
     for x in list_transactions:
