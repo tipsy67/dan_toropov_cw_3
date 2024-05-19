@@ -60,4 +60,8 @@ class Transactions:
         return None
 
     def __repr__(self):
+        """
+
+        :return:
+        """
         return f"{self.id} {self.date}" if self.is_trans_valid else self.err_str
