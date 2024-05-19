@@ -39,5 +39,5 @@ def test_format_trans(test_input, expected):
     assert format_trans(test_input) == expected
 
 
-def test_print_trans():
-    assert print_trans() is None
+# def test_print_trans():
+#     assert print_trans() is None

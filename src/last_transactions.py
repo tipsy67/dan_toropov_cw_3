@@ -1,23 +1,40 @@
+import logging
 import json
 from datetime import datetime
 
-from src.settings import QUANTITY_TRANSACTIONS, PATH_TO_OPERATIONS
+from src.settings import QUANTITY_TRANSACTIONS, PATH_TO_OPERATIONS, PATH_TO_LOG, ERROR_LOG
 from src.transactions import Transactions
+
+logging.basicConfig(level=logging.ERROR,
+                    filename=PATH_TO_LOG,
+                    filemode='w',
+                    format='%(asctime)s -%(name)s - %(levelname)s - %(message)s')
+
+if not ERROR_LOG:
+    logging.disable(logging.CRITICAL)
 
 
 def load_json() -> [Transactions]:
     """
-    загрузим непустые транзакции
+    загрузим транзакции
     :return:
     """
     with open(PATH_TO_OPERATIONS) as file:
         list_ = json.load(file)
+
+    last_valid_trans = 0
     list_transactions = []
+
     for x in list_:
         try:
-            list_transactions.append(Transactions(x))
+            transaction = Transactions(x)
+            list_transactions.append(transaction)
         except KeyError as e:
-            print(e)
+            logging.error(f'missing key:{e} following the transaction id:{last_valid_trans}')
+        except ValueError as e:
+            logging.error(e)
+        else:
+            last_valid_trans = transaction.id
 
     return list_transactions
 
@@ -29,7 +46,7 @@ def return_last_trans(list_: [Transactions]) -> [Transactions]:
     :return:
     """
     local_copy = list_[:]
-    local_copy = [x for x in local_copy if x.state and x.is_trans_valid]
+    local_copy = [x for x in local_copy if x.state]
     local_copy = sorted(local_copy, key=lambda x: x.date, reverse=True)
     local_copy = local_copy[:QUANTITY_TRANSACTIONS]
     return local_copy
@@ -73,7 +90,13 @@ def print_trans() -> None:
     в количестве QUANTITY_TRANSACTIONS
     :return:
     """
-    list_transactions = load_json()
-    list_transactions = return_last_trans(list_transactions)
-    for x in list_transactions:
-        print(format_trans(x))
+    try:
+        list_transactions = load_json()
+    except FileNotFoundError as e:
+        logging.error(e)
+    except PermissionError as e:
+        logging.error(e)
+    else:
+        list_transactions = return_last_trans(list_transactions)
+        for x in list_transactions:
+            print(format_trans(x))

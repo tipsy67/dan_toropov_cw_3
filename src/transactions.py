@@ -1,12 +1,7 @@
 from datetime import datetime
 
-from src.settings import ERROR_LOG
-
 
 class Transactions:
-    is_trans_valid = True  # флаг для отслеживания валидности транзакций
-    err_str = ""  # строка для хранения ошибок валидности при установленном ERROR_LOG
-
     def __init__(self, dict_: dict):
         """
         :param dict_:
@@ -31,9 +26,11 @@ class Transactions:
         self.operationAmount = dict_["operationAmount"]
         self.description = dict_["description"]
         self.to = dict_["to"]
-        self.from_maybe_empty: str = dict_["from"] if "from" in dict_ else None
-        if self.from_maybe_empty is not None:
+        if "from" in dict_:
+            self.from_maybe_empty: str = dict_["from"]
             self.validate(self.from_maybe_empty.split()[-1])
+        else:
+            self.from_maybe_empty = None
         self.validate(self.to.split()[-1])
 
 
@@ -43,12 +40,8 @@ class Transactions:
         :param account: строка с номером счета
         :return:
         """
-        if not (account.isdigit() and (len(account) == 16 or len(account) == 20)):
-            raise ValueError(f'Account error {account} in id:{self.id}')
+        if not (account.isdigit and (len(account) == 16 or len(account) == 20)):
+            raise ValueError(f'account error {account} in id:{self.id}')
 
     def __repr__(self):
-        """
-
-        :return:
-        """
-        return f"{self.id} {self.date}" if self.is_trans_valid else self.err_str
+        return f"{self.id} {self.date}"
