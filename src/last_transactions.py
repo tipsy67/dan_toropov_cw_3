@@ -12,7 +12,14 @@ def load_json() -> [Transactions]:
     """
     with open(PATH_TO_OPERATIONS) as file:
         list_ = json.load(file)
-    return [Transactions(x) for x in list_ if x != {}]
+    list_transactions = []
+    for x in list_:
+        try:
+            list_transactions.append(Transactions(x))
+        except KeyError as e:
+            print(e)
+
+    return list_transactions
 
 
 def return_last_trans(list_: [Transactions]) -> [Transactions]:

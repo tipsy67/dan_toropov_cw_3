@@ -24,28 +24,18 @@ class Transactions:
         "from": "Счет 75106830613657916952",
         "to": "Счет 11776614605963066702"
         """
-        self.id = dict_["id"] if "id" in dict_ else self.missing_key("id")
-        self.state = dict_["state"] == "EXECUTED" if "state" in dict_ else self.missing_key("state")
-        self.date = datetime.strptime(dict_["date"], '%Y-%m-%dT%H:%M:%S.%f') \
-            if "date" in dict_ else self.missing_key("date")
-        self.operationAmount = dict_["operationAmount"] if "operationAmount" in dict_ else self.missing_key("opAm")
-        self.description = dict_["description"] if "description" in dict_ else self.missing_key("descr")
+        # self.id = dict_["id"] if "id" in dict_ else self.missing_key("id")
+        self.id = dict_["id"]
+        self.state = dict_["state"] == "EXECUTED"
+        self.date = datetime.strptime(dict_["date"], '%Y-%m-%dT%H:%M:%S.%f')
+        self.operationAmount = dict_["operationAmount"]
+        self.description = dict_["description"]
+        self.to = dict_["to"]
         self.from_maybe_empty: str = dict_["from"] if "from" in dict_ else None
-        self.to = dict_["to"] if "to" in dict_ else self.missing_key("to")
         if self.from_maybe_empty is not None:
             self.validate(self.from_maybe_empty.split()[-1])
         self.validate(self.to.split()[-1])
 
-    def missing_key(self, key: str) -> None:
-        """
-        для записи отсутвующего ключа в строку ошибок
-        и сбрасывания флага валидности
-        :param key: отсутствующий ключ в словаре тразакции
-        :return:
-        """
-        if ERROR_LOG:
-            self.err_str = self.err_str + "mis_" + key + ";"
-        self.is_trans_valid = False
 
     def validate(self, account: str) -> None:
         """
@@ -54,10 +44,7 @@ class Transactions:
         :return:
         """
         if not (account.isdigit() and (len(account) == 16 or len(account) == 20)):
-            self.is_trans_valid = False
-            if ERROR_LOG:
-                self.err_str = self.err_str + "ERR_ACC:"
-        return None
+            raise ValueError(f'Account error {account} in id:{self.id}')
 
     def __repr__(self):
         """
